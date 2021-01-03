@@ -1,8 +1,8 @@
-require File.expand_path('../lib/osom_tables', __FILE__)
+require File.expand_path('../lib/simple_table', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name    = 'osom-tables'
-  s.version = OsomTables::VERSION
+  s.name    = 'simple-table'
+  s.version = SimpleTable::VERSION
   s.date    = '2013-06-09'
 
   s.summary = "Fancy ajax tables in true rails style"
@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
 
   s.authors  = ['Nikolay Nemshilov']
   s.email    = 'nemshilov@gmail.com'
-  s.homepage = 'http://github.com/MadRabbit/osom-tables'
+  s.homepage = 'http://github.com/MadRabbit/simple-table'
   s.licenses = ['MIT']
 
   s.files        = `git ls-files`.split("\n")

@@ -2,7 +2,7 @@
 
 require 'action_view/record_identifier'
 
-module OsomTables
+module SimpleTable
   module RecordTagHelper
     include ActionView::RecordIdentifier
 

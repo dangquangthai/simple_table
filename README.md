@@ -1,4 +1,4 @@
-# OsomTables
+# SimpleTable
 
 Ajax tables engine that respects MVC and goes well with the rails way.
 
@@ -12,20 +12,20 @@ Ajax tables engine that respects MVC and goes well with the rails way.
 
 ## Demo App
 
-You can find a simple demo-app [over here](https://github.com/MadRabbit/osom-tables-app)
+You can find a simple demo-app [over here](https://github.com/MadRabbit/simple-table-app)
 
 ## Simple Setup
 
 Add this gem to your `Gemfile`
 
 ```ruby
-gem 'osom-tables'
+gem 'simple-table'
 ```
 
 Make a partial called `_table.html.haml` in your resource views
 
 ```haml
-= osom_table_for @things, any_options do |t|
+= simple_table_for @things, any_options do |t|
 
   = t.head do
     %th Name
@@ -59,17 +59,17 @@ end
 And finally, add the assets to your `application.js` and `application.css` files the usual way
 
 ```js
- *= require 'osom-tables'
+ *= require 'simple-table'
 ```
 
 And you're good to go!
 
 ## Adding Checkbox
 
-OsomTables offer show_checkbox setting to enable checkboxes on datatable
+SimpleTable offer show_checkbox setting to enable checkboxes on datatable
 
 ```haml
-= osom_table_for @things, show_checkbox: true do |t|
+= simple_table_for @things, show_checkbox: true do |t|
 
   = t.head do
     %th Name
@@ -84,13 +84,13 @@ The checked checkbox stage is able to be saved when you navigate through pages.
 
 ## Adding Sorting
 
-OsomTables don't enforce any sort of dealing with the sorting, just use your standard scopes.
-The osom-tables will just handle the views and the `params[:order]` for you.
+SimpleTable don't enforce any sort of dealing with the sorting, just use your standard scopes.
+The simple-table will just handle the views and the `params[:order]` for you.
 
 Add the order keys to your `t.head` section like so
 
 ```haml
-= osom_table_for @things do |t|
+= simple_table_for @things do |t|
 
   = t.head do
     %th{order: 'name'} Name
@@ -138,22 +138,22 @@ In case you want to use filtering and sorting combined, follow the example below
 ```
 var apply_filters = function(wrapper) {
   var form, params, table;
-  form = wrapper.find("form.osom-tables-filters");
+  form = wrapper.find("form.simple-table-filters");
   params = extract_params(form);
-  table = wrapper.find(".osom-table");
-  $.store_osom_filters(table, params); // stores current filters
-  $.append_osom_order(table, params); // append selected order to filters params
-  return $.osom_table(table, $.param.querystring(wrapper.find(".osom-table > table").data("url"), params, 2));
+  table = wrapper.find(".simple-table");
+  $.store_simple_filters(table, params); // stores current filters
+  $.append_simple_order(table, params); // append selected order to filters params
+  return $.simple_table(table, $.param.querystring(wrapper.find(".simple-table > table").data("url"), params, 2));
 };
 
 ```
 
 ## Table Reuse
 
-By default `osom-tables` will use your current url as the url to fetch the table data. If you wish to reuse the `_table` partial from another view/controller, you must specify the `url: resource_path` option to ensure the table data is sourced correctly.
+By default `simple-table` will use your current url as the url to fetch the table data. If you wish to reuse the `_table` partial from another view/controller, you must specify the `url: resource_path` option to ensure the table data is sourced correctly.
 
 ```haml
-= osom_tables_for @things, url: things_path do |t|
+= simple_table_for @things, url: things_path do |t|
   ...
 ```
 
@@ -161,8 +161,8 @@ By default `osom-tables` will use your current url as the url to fetch the table
 
 ```
 $(document).ready(function(){
-  $('body').on('osom-table:loaded', '#scanned_document_table', function() {
-    //initialize your javascript component in osom-table here
+  $('body').on('simple-table:loaded', '#scanned_document_table', function() {
+    //initialize your javascript component in simple-table here
 
   });
 });
@@ -171,14 +171,14 @@ $(document).ready(function(){
 
 ## HTML5 Push State
 
-OsomTables can easily hook you up with the html5 push-state goodness.
+SimpleTable can easily hook you up with the html5 push-state goodness.
 Yes, it's just like `pjax` (whoever come up with this name) only better
 coz it renders only what needs to be rendered.
 
 To switch push state on, just pass the `push: true` option with your table. You must also use `async: true`.
 
 ```haml
-= osom_tables_for @things, async: true, push: true do |t|
+= simple_table_for @things, async: true, push: true do |t|
   ...
 ```
 

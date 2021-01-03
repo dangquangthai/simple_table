@@ -1,40 +1,40 @@
 /**
- * The OsomTables scriptery
+ * The SimpleTable scriptery
  *
  * Copyright (C) 2013 Nikolay Nemshilov
  */
 (function($) {
 
-  if (!$) { return console.log("No jQuery? Osom!"); }
+  if (!$) { return console.log("No jQuery? No Problem!"); }
 
   var current_table = null;
 
   // Event Listeners
   // ==========================================================================
-  $(document).on('click', '.osom-table .pagination a', function(e) {
+  $(document).on('click', '.simple-table .pagination a', function(e) {
     e.preventDefault();
-    $.osom_table($(this).closest('.osom-table'), this.getAttribute('href'));
+    $.simple_table($(this).closest('.simple-table'), this.getAttribute('href'));
   });
 
-  $(document).on('click', '.osom-table th[data-order]', function(e) {
+  $(document).on('click', '.simple-table th[data-order]', function(e) {
     order_table(this);
   });
 
-  $(document).on('click', '.osom-table table th.mark > input[type="checkbox"]', mark_an_item_as_checked);
+  $(document).on('click', '.simple-table table th.mark > input[type="checkbox"]', mark_an_item_as_checked);
 
-  $(document).on('click', '.osom-table table td.mark > input[type="checkbox"]', function() {
-    return store_checked_ids_in_data_attribute($(this).closest('.osom-table'));
+  $(document).on('click', '.simple-table table td.mark > input[type="checkbox"]', function() {
+    return store_checked_ids_in_data_attribute($(this).closest('.simple-table'));
   });
 
   /* Load async tables */
   $(document).ready(function() {
     update_table_urls_from_query_string();
-    load_tables('.osom-table .async');
+    load_tables('.simple-table .async');
   });
 
   $(window).on('popstate', function(e) {
     update_table_urls_from_query_string();
-    load_tables('.osom-table > table[data-push]');
+    load_tables('.simple-table > table[data-push]');
   });
 
   // Event Handlers
@@ -44,24 +44,24 @@
   function order_table(order_link) {
     var asc = $(order_link).hasClass('asc');
     var order = $(order_link).data('order') + (asc ? '_desc' : '');
-    var table = $(order_link).closest('.osom-table');
+    var table = $(order_link).closest('.simple-table');
     var params = {};
 
-    $.store_osom_order(table, order);
-    $.append_osom_filters(table, params);
+    $.store_simple_order(table, order);
+    $.append_simple_filters(table, params);
     params.order = order;
     params.page = 1;
-    $.osom_table(table, build_url(
+    $.simple_table(table, build_url(
       $(order_link).closest('table').data('url'), params
     ));
   }
 
-  // Finds all osom-tables with a url stored in the query string, and updates
+  // Finds all simple-table with a url stored in the query string, and updates
   // their data-url attribute
   function update_table_urls_from_query_string() {
     url_object = get_query_params();
     for (var key in url_object) {
-      table_match = key.match(/osom-tables\[(.+)\]/)
+      table_match = key.match(/simple-table\[(.+)\]/)
       if (table_match !== null) {
         $("#" + table_match[1]).data('url', url_object[key])
       }
@@ -71,7 +71,7 @@
   function load_tables(finder) {
     $(finder).each(function(index, element) {
       var table = $(element);
-      return $.osom_table(table.closest('.osom-table'), table.data('url'), true);
+      return $.simple_table(table.closest('.simple-table'), table.data('url'), true);
     });
   }
 
@@ -82,18 +82,18 @@
         return true;
       };
     })(this));
-    return store_checked_ids_in_data_attribute($(this).closest('.osom-table'));
+    return store_checked_ids_in_data_attribute($(this).closest('.simple-table'));
   }
 
   // Public Functions
   // ==========================================================================
 
-  var osom_table = $.fn.osom_table = $.osom_table = function(container, url, no_push) {
+  var simple_table = $.fn.simple_table = $.simple_table = function(container, url, no_push) {
     current_table = container.addClass('loading');
     actual_table  = container.find('table');
     var table_id = actual_table.attr('id');
 
-    actual_table.trigger('osom-table:request');
+    actual_table.trigger('simple-table:request');
 
     if (history.pushState && !no_push && actual_table.data('push')) {
       push_table_state(table_id, url);
@@ -108,27 +108,27 @@
       complete: function() {
         container.removeClass('loading');
         actual_table  = container.find('table');
-        actual_table.trigger('osom-table:loaded');
+        actual_table.trigger('simple-table:loaded');
       }
     });
   };
 
-  var store_osom_filters = $.fn.store_osom_filters = $.store_osom_filters = function(table, filters) {
-    table.data("osomFilters", filters);
+  var store_simple_filters = $.fn.store_simple_filters = $.store_simple_filters = function(table, filters) {
+    table.data("simpleFilters", filters);
   };
 
-  var store_osom_order = $.fn.store_osom_order = $.store_osom_order = function(table, order) {
-    table.data("osomOrder", order);
+  var store_simple_order = $.fn.store_simple_order = $.store_simple_order = function(table, order) {
+    table.data("simpleOrder", order);
   };
 
-  var append_osom_order = $.fn.append_osom_order = $.append_osom_order = function(table, params) {
-    if(table.data('osomOrder')) {
-      params.order = table.data('osomOrder')
+  var append_simple_order = $.fn.append_simple_order = $.append_simple_order = function(table, params) {
+    if(table.data('simpleOrder')) {
+      params.order = table.data('simpleOrder')
     }
   }
 
-  var append_osom_filters = $.fn.append_osom_filters = $.append_osom_filters = function(table, params) {
-    var filters = table.data('osomFilters');
+  var append_simple_filters = $.fn.append_simple_filters = $.append_simple_filters = function(table, params) {
+    var filters = table.data('simpleFilters');
     if(filters) {
       for (var attrname in filters) { params[attrname] = filters[attrname]; }
     }
@@ -140,12 +140,12 @@
   // Pushes the table's state/url to history
   function push_table_state(table_id, url) {
     url_object = get_query_params();
-    url_object['osom-tables[' + table_id + ']'] = url;
+    url_object['simple-table[' + table_id + ']'] = url;
 
     combined_url = current_pathname + "?" + $.param(url_object);
 
-    history.pushState({url: combined_url}, 'osom-table', combined_url);
-    url = build_url(url, {osom_tables_cache_killa: true});
+    history.pushState({url: combined_url}, 'simple-table', combined_url);
+    url = build_url(url, {simple_table_cache_killa: true});
   }
 
   // Callback for successful ajax load of table data

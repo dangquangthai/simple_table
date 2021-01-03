@@ -1,13 +1,13 @@
-require 'osom_tables/record_tag_helper'
+require 'simple_table/record_tag_helper'
 
-module OsomTables::Helper
-  include OsomTables::RecordTagHelper
+module SimpleTable::Helper
+  include SimpleTable::RecordTagHelper
   # @param [Object] items items to be displayed, not needed if the async option is set
   # @param [Hash] options
   # @option opts [Boolean] :async Load the table content asynchronously on dom ready
   #
   # TODO: Fill all these in
-  def osom_table_for(*args, &block)
+  def simple_table_for(*args, &block)
     options  = args.extract_options!
     items    = args.first || []
     push     = options[:push] == true and options.delete(:push)
@@ -16,7 +16,7 @@ module OsomTables::Helper
     paginate = options[:paginate] || {} and options.delete(:paginate)
     show_checkbox = options[:show_checkbox] || false
     options.delete(:show_checkbox) if options[:show_checkbox]
-    url = url.gsub(/(\?|&)osom_tables_cache_killa=[^&]*?/, '')
+    url = url.gsub(/(\?|&)simple_table_cache_killa=[^&]*?/, '')
 
     # Allow the table to be loaded asynchronously
     if options[:async]
@@ -29,28 +29,28 @@ module OsomTables::Helper
     options[:data][:url]  = url
     options[:data][:push] = true if push
 
-    content_tag :div, class: "osom-table #{"empty" if items.empty?}" do
-      osom_tables_search(url, search) +
+    content_tag :div, class: "simple-table #{"empty" if items.empty?}" do
+      simple_table_search(url, search) +
 
       content_tag(:table, options) {
         caption = if items.empty?
           content_tag(:span) { "No items to display here!" }
         else
-          image_tag('osom-tables-spinner.gif', alt: nil)
+          image_tag('simple-table-spinner.gif', alt: nil)
         end
         content_tag(:caption, caption, class: 'locker') +
         capture(Table.new(self, items, show_checkbox), &block)
       } +
 
-      osom_tables_pagination(items, url, paginate)
+      simple_table_pagination(items, url, paginate)
     end
   end
 
-  def osom_tables_search(url, search)
+  def simple_table_search(url, search)
     ''.html_safe if ! search
   end
 
-  def osom_tables_pagination(items, url, options)
+  def simple_table_pagination(items, url, options)
     return ''.html_safe if items.empty?
     if respond_to?(:paginate) # kaminari
       options[:params] = Rails.application.routes.recognize_path(url, method: :get).merge(options[:params] || {})
